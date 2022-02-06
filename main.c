@@ -15,13 +15,16 @@ char* const container_args[] = {
     NULL
 };
 
+
 int container_main(void* arg)
 {
-    printf("Container - inside the container!\n");
-    /* 直接执行一个shell，以便我们观察这个进程空间里的资源是否被隔离了 */
-    execv(container_args[0], container_args); 
-    printf("Something's wrong!\n");
-    return 1;
+  printf("Container - inside the container!\n");
+  // 如果你的机器的根目录的挂载类型是shared，那必须先重新挂载根目录
+  // mount("", "/", NULL, MS_PRIVATE, "");
+  mount("none", "/tmp", "tmpfs", 0, "");
+  execv(container_args[0], container_args);
+  printf("Something's wrong!\n");
+  return 1;
 }
 
 int main()
